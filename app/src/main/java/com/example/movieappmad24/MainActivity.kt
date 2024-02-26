@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -31,10 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.movieappmad24.models.Movie
+import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 
 class MainActivity : ComponentActivity() {
@@ -52,14 +51,16 @@ class MainActivity : ComponentActivity() {
 //                    }
                 }
 //                MovieRow("Avatar")
-                val moviesList = mutableListOf("Avatar", "Dune", "Star Wars")
-                MovieList(moviesList)
+//                val moviesList = mutableListOf("Avatar", "Dune II", "Star Wars", "Gladiator")
+//                MovieList(moviesList)
+
+                MovieList(getMovies())
             }
         }
     }
 
     @Composable
-    fun MovieRow(movie: String) {
+    fun MovieRow(movie: Movie) {
 //        Column(modifier = Modifier.padding(5.dp)) {
 //            Box(contentAlignment = Alignment.TopEnd) {
 //                Card {
@@ -127,7 +128,7 @@ class MainActivity : ComponentActivity() {
                         .padding(5.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = movie)
+                    Text(text = movie.title)
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = "dropdown"
@@ -138,7 +139,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun MovieList(movies: List<String>) {
+    fun MovieList(movies: List<Movie>) {
         LazyColumn {
             items(movies) { movie ->
                 MovieRow(movie)
