@@ -52,8 +52,8 @@ class MainActivity : ComponentActivity() {
 //                    }
                 }
 //                MovieRow("Avatar")
-//                val moviesList = mutableListOf("Avatar", "Dune", "Star Wars")
-//                MovieList(moviesList)
+                val moviesList = mutableListOf("Avatar", "Dune", "Star Wars")
+                MovieList(moviesList)
             }
         }
     }
@@ -137,6 +137,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Composable
+    fun MovieList(movies: List<String>) {
+        LazyColumn {
+            items(movies) { movie ->
+                MovieRow(movie)
+            }
+        }
+    }
 
 }
 
