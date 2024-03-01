@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -126,7 +124,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Button(
                         onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(Color.DarkGray)
+                        colors = ButtonDefaults.buttonColors(Color.Gray)
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -141,7 +139,7 @@ class MainActivity : ComponentActivity() {
                     }
                     Button(
                         onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(Color.DarkGray)
+                        colors = ButtonDefaults.buttonColors(Color.Gray)
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -214,7 +212,7 @@ class MainActivity : ComponentActivity() {
     fun MovieList(movies: List<Movie>) {
         LazyColumn {
             items(movies) { movie ->
-                MovieRow(movie)
+                ExpandableCard(movie)
             }
         }
     }
