@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -69,62 +71,73 @@ fun ExpandableCard(movie: Movie) {
         onClick = { expandedState = !expandedState }
     ) {
         Column {
-            Box(
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(movie.images.elementAt(0))
-                        .crossfade(true)
-                        .build(),
-                    loading = { CircularProgressIndicator() },
-                    contentDescription = "image",
-                    contentScale = ContentScale.Crop
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp),
-                    contentAlignment = Alignment.TopEnd
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "Add to favorites",
-                        tint = Color.Cyan
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = movie.title,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(6f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                IconButton(onClick = { expandedState = !expandedState }) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Arrow",
-                        modifier = Modifier
-                            .weight(1f)
-                            .rotate(rotationState)
-                    )
-
-                }
-            }
+            MovieImage(movie.images.first())
+            MovieHeader(movie, rotationState, expandedState) { expandedState = !expandedState }
             if (expandedState) {
-                MovieDetails(movie = movie)
+                MovieDetails(movie)
             }
+        }
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun MovieImage(imageUrl: String) {
+    Box(
+        modifier = Modifier
+            .height(150.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            loading = { CircularProgressIndicator() },
+            contentDescription = "image",
+            contentScale = ContentScale.Crop
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            Icon(
+                imageVector = Icons.Filled.FavoriteBorder,
+                contentDescription = "Add to favorites",
+                tint = Color.Cyan
+            )
+        }
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun MovieHeader(movie: Movie, rotationState: Float, expandedState: Boolean, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = movie.title,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(6f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = "Arrow",
+                modifier = Modifier
+                    .weight(1f)
+                    .rotate(rotationState)
+            )
         }
     }
 }
@@ -146,5 +159,15 @@ fun MovieDetails(movie: Movie) {
         Text(text = "Rating: ${movie.rating}")
         Divider(color = Color.Black, thickness = 1.dp)
         Text(text = "Plot: ${movie.plot}")
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun MovieList(movies: List<Movie>) {
+    LazyColumn {
+        items(movies) { movie ->
+            ExpandableCard(movie)
+        }
     }
 }
