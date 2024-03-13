@@ -25,8 +25,8 @@ fun Navigation(modifier: Modifier) {
         composable(
             route = "detailscreen/{movieId}",
             arguments = listOf(navArgument("movieId") { type = NavType.StringType })
-        ) {
-            DetailScreen(navController)
+        ) {backStackEntry ->
+            DetailScreen(navController, movieId = backStackEntry.arguments?.getString("movieId"))
         }
     }
 }

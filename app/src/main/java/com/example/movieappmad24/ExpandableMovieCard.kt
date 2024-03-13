@@ -52,6 +52,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.compose.rememberNavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieappmad24.models.Movie
@@ -60,11 +63,12 @@ import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 
 
 @Composable
-fun MovieList(modifier: Modifier, movies: List<Movie> = getMovies()) {
+fun MovieList(modifier: Modifier, movies: List<Movie> = getMovies(), navController: NavController) {
     LazyColumn(modifier = modifier) {
         items(movies) { movie ->
             MovieRow(movie = movie, onItemClick = { movieId ->
-                Log.d("MovieList", "My callback value: $movieId")
+//                Log.d("MovieList", "My callback value: $movieId")
+                navController.navigate(route = "detailscreen/$movieId")
             })
         }
     }
@@ -205,7 +209,11 @@ fun MovieDetails(modifier: Modifier, movie: Movie) {
 @Composable
 fun DefaultPreview() {
     MovieAppMAD24Theme {
-        MovieList(modifier = Modifier, movies = getMovies())
+        MovieList(
+            modifier = Modifier,
+            movies = getMovies(),
+            navController = rememberNavController()
+        )
     }
 }
 

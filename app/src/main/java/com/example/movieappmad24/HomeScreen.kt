@@ -21,7 +21,8 @@ fun HomeScreen(navController: NavController) {
     ) { innerPadding ->
         MovieList(
             modifier = Modifier.padding(innerPadding),
-            movies = getMovies()
+            movies = getMovies(),
+            navController = navController
         )
     }
 }
