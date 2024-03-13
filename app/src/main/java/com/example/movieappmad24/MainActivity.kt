@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
+import com.example.movieappmad24.navigation.Navigation
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 
 class MainActivity : ComponentActivity() {
@@ -32,19 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                 }
-                Scaffold(
-                    topBar = { TopBar("Movie App") },
-                    content = { innerPadding ->
-                        Column(
-                            Modifier
-                                .padding(innerPadding)
-                        ) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            MovieList(getMovies())
-                        }
-                    },
-                    bottomBar = { BottomBar() }
-                )
+                Navigation(Modifier)
             }
         }
     }
