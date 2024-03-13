@@ -7,21 +7,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import com.example.movieappmad24.models.getMovies
 
 @ExperimentalMaterial3Api
 @Composable
-fun DetailScreen() {
+fun DetailScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopBar("Movie App") },
-        content = { innerPadding ->
-            Column(
-                Modifier
-                    .padding(innerPadding)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        },
-        bottomBar = { BottomBar() }
-    )
+        topBar = { TopBar(title = "Movie App") },
+        bottomBar = {
+            BottomBar { /* handle home click */ }
+        }
+    ) { innerPadding ->
+        MovieList(
+            modifier = Modifier.padding(innerPadding),
+            movies = getMovies()
+        )
+    }
 }

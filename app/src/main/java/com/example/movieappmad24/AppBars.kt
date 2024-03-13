@@ -2,6 +2,7 @@ package com.example.movieappmad24
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,9 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -25,17 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.movieappmad24.models.getMovies
 
 @ExperimentalMaterial3Api
 @Composable
 fun TopBar(title: String) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Modifier.padding(top = 110.dp)
     CenterAlignedTopAppBar(
-        title = { Text(text = title) },
-        navigationIcon = { TopBarIcon(Icons.Default.Menu, "Menu") },
-        actions = { TopBarIcon(Icons.Default.Edit, "Edit") },
-        scrollBehavior = scrollBehavior,
+        title = { Text(title) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary
+        )
     )
 }
 
@@ -50,19 +54,37 @@ fun TopBarIcon(icon: ImageVector, contentDescription: String) {
 }
 
 @Composable
-fun BottomBar() {
-    BottomAppBar(
-        actions = {
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                BottomBarButton(Icons.Default.Home, "Home")
-                BottomBarButton(Icons.Default.Star, "Watchlist")
-            }
+fun BottomBar(
+    modifier: Modifier = Modifier,
+    onHomeClicked: () -> Unit = {},
+    onWatchlistClicked: () -> Unit = {}
+) {
+    Column(modifier = modifier) {
+        NavigationBar {
+            NavigationBarItem(
+                label = { Text("Home") },
+                selected = true,
+                onClick = onHomeClicked,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Go to home"
+                    )
+                }
+            )
+            NavigationBarItem(
+                label = { Text("Watchlist") },
+                selected = false,
+                onClick = onWatchlistClicked,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = "Go to watchlist"
+                    )
+                }
+            )
         }
-    )
+    }
 }
 
 @Composable
