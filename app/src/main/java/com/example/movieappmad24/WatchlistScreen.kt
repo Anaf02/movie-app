@@ -5,24 +5,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.movieappmad24.models.getMovies
-import com.example.movieappmad24.navigation.Screen
+import com.example.movieappmad24.navigation.BottomBarScreen
 
 @ExperimentalMaterial3Api
 @Composable
-fun WatchlistScreen(navController: NavController) {
+fun WatchlistScreen(navController: NavHostController) {
     Scaffold(
-        topBar = { TopBar(title = "Movie App", false, navController) },
+        topBar = { TopBar(title = BottomBarScreen.Watchlist.title, false, navController) },
         bottomBar = {
-            BottomBar(
-                onHomeClicked = { navController.navigate(Screen.Home.route) },
-                onWatchlistClicked = { navController.navigate(Screen.Watchlist.route) })
+            BottomBar(navController)
         }
     ) { innerPadding ->
         MovieList(
             modifier = Modifier.padding(innerPadding),
-            movies = getMovies(),
+            movies = getMovies().asReversed(),
             navController = navController
         )
     }
