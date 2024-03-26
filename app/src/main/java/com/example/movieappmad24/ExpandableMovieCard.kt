@@ -53,6 +53,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
+import com.example.movieappmad24.navigation.Screen
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 
 
@@ -62,7 +63,7 @@ fun MovieList(modifier: Modifier, movies: List<Movie> = getMovies(), navControll
         items(movies) { movie ->
             MovieRow(movie = movie, onItemClick = { movieId ->
 //                Log.d("MovieList", "My callback value: $movieId")
-                navController.navigate(route = "detailscreen/$movieId")
+                navController.navigate(route = Screen.Detail.withArgs(movieId))
             })
         }
     }
@@ -199,6 +200,28 @@ fun MovieDetails(modifier: Modifier, movie: Movie) {
     }
 }
 
+@Composable
+fun HorizontalScrollableImages(movieImages: List<String>) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            state = rememberLazyListState()
+        ) {
+            items(movieImages) { imageUrl ->
+                Card(
+                    modifier = Modifier
+                        .height(220.dp)
+                        .width(maxWidth)
+                        .padding(16.dp)
+                ) {
+                    MovieImage(imageUrl)
+                }
+            }
+        }
+
+    }
+}
+
 @Preview
 @Composable
 fun DefaultPreview() {
@@ -211,27 +234,6 @@ fun DefaultPreview() {
     }
 }
 
-@Composable
-fun HorizontalScrollableImages(movieImages: List<String>) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            state = rememberLazyListState()
-        ) {
-            items(movieImages) { imageUrl ->
-                Card(
-                    modifier = Modifier
-                        .height(250.dp)
-                        .width(maxWidth)
-                        .padding(16.dp)
-                ) {
-                    MovieImage(imageUrl)
-                }
-            }
-        }
-
-    }
-}
 
 
 //@ExperimentalMaterial3Api

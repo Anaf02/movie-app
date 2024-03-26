@@ -2,7 +2,6 @@ package com.example.movieappmad24.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,23 +9,31 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.movieappmad24.DetailScreen
 import com.example.movieappmad24.HomeScreen
+import com.example.movieappmad24.WatchlistScreen
 
 
 @ExperimentalMaterial3Api
 @Composable
-fun Navigation(modifier: Modifier) {
+fun Navigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "homescreen") {
-        composable(route = "homescreen") {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route
+    ) {
+        composable(route = Screen.Home.route) {
             HomeScreen(navController)
         }
 
         composable(
-            route = "detailscreen/{movieId}",
+            route = Screen.Detail.route + "/{movieId}",
             arguments = listOf(navArgument("movieId") { type = NavType.StringType })
-        ) {backStackEntry ->
+        ) { backStackEntry ->
             DetailScreen(navController, movieId = backStackEntry.arguments?.getString("movieId"))
+        }
+
+        composable(route = Screen.Watchlist.route) {
+            WatchlistScreen(navController)
         }
     }
 }

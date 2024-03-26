@@ -13,12 +13,7 @@ import com.example.movieappmad24.models.getMovieById
 @Composable
 fun DetailScreen(navController: NavController, movieId: String?) {
     Scaffold(
-        topBar = { TopBar(title = getMovieById(movieId.toString()).title, true, navController) },
-        bottomBar = {
-            BottomBar {
-                //navController.navigate(route = "homescreen") ->>> use backstack
-            }
-        }
+        topBar = { TopBar(title = getMovieById(movieId.toString()).title, true, navController) }
     ) { innerPadding ->
 //        Text(modifier = Modifier.padding(innerPadding), text = "Hello detail screen ${movieId}")
         Column(

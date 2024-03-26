@@ -11,7 +11,7 @@ import com.example.movieappmad24.navigation.Screen
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeScreen(navController: NavController) {
+fun WatchlistScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar(title = "Movie App", false, navController) },
         bottomBar = {
