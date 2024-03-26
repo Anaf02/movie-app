@@ -13,6 +13,11 @@ data class Movie(
     val rating: String
 )
 
+fun getMovieById(movieId: String): Movie {
+    return getMovies().find { it.id == movieId }
+        ?: throw NullPointerException("Movie title not found")
+}
+
 fun getMovies(): List<Movie> {
     return listOf(
         Movie(
