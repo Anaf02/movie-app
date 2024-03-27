@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.movieappmad24.models.getMovies
-import com.example.movieappmad24.navigation.BottomBarScreen
+import com.example.movieappmad24.navigation.BottomBarItem
 
 @ExperimentalMaterial3Api
 @Composable
 fun WatchlistScreen(navController: NavHostController) {
     Scaffold(
-        topBar = { TopBar(title = BottomBarScreen.Watchlist.title, false, navController) },
+        topBar = { TopBar(title = BottomBarItem.bottomBarItems()[1].title, false, navController) },
         bottomBar = {
             BottomBar(navController)
         }
