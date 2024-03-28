@@ -1,4 +1,4 @@
-package com.example.movieappmad24
+package com.example.movieappmad24.widgets
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -19,9 +19,15 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
@@ -58,7 +65,11 @@ import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 
 
 @Composable
-fun MovieList(modifier: Modifier, movies: List<Movie> = getMovies(), navController: NavController) {
+fun MovieList(
+    modifier: Modifier,
+    movies: List<Movie> = getMovies(),
+    navController: NavController
+) {
     LazyColumn(modifier = modifier) {
         items(movies) { movie ->
             MovieRow(movie = movie, onItemClick = { movieId ->
@@ -82,12 +93,9 @@ fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column {
-
             MovieCardHeader(imageUrl = movie.images[0])
 
-
-            MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
-
+            ExpandableMovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
         }
     }
 }
@@ -100,9 +108,7 @@ fun MovieCardHeader(imageUrl: String) {
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-
         MovieImage(imageUrl)
-
         FavoriteIcon()
     }
 }
@@ -140,7 +146,7 @@ fun FavoriteIcon() {
 
 
 @Composable
-fun MovieDetails(modifier: Modifier, movie: Movie) {
+fun ExpandableMovieDetails(modifier: Modifier, movie: Movie) {
     var showDetails by remember {
         mutableStateOf(false)
     }
@@ -148,44 +154,73 @@ fun MovieDetails(modifier: Modifier, movie: Movie) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(6.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = movie.title)
-        Icon(
-            modifier = Modifier
-                .clickable {
-                    showDetails = !showDetails
-                },
-            imageVector =
-            if (showDetails) Icons.Filled.KeyboardArrowDown
-            else Icons.Default.KeyboardArrowUp, contentDescription = "show more"
-        )
+        ExpandOrCollapseArrowIcon(
+            showDetails = showDetails,
+            onClick = { showDetails = !showDetails })
     }
-
 
     AnimatedVisibility(
         visible = showDetails,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        Column(modifier = modifier) {
-            Text(
-                text = "Director: ${movie.director}",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(text = "Released: ${movie.year}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Genre: ${movie.genre}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Actors: ${movie.actors}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Rating: ${movie.rating}", style = MaterialTheme.typography.bodySmall)
+        MovieDetails(modifier = modifier, movie = movie)
+    }
+}
 
-            Divider(modifier = Modifier.padding(3.dp))
+@Composable
+fun MovieDetails(modifier: Modifier, movie: Movie) {
+    Column(modifier = modifier) {
 
-            Text(buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp)) {
-                    append("Plot: ")
-                }
+        MovieDetailRow("Director:", movie.director, Icons.Filled.Person)
+        MovieDetailRow("Released:", movie.year, Icons.Filled.Check)
+        MovieDetailRow("Genre:", movie.genre, Icons.Filled.DateRange)
+        MovieDetailRow("Actors:", movie.actors, Icons.Filled.Face)
+        MovieDetailRow("Rating:", movie.rating, Icons.Filled.Star)
+
+        Divider(modifier = Modifier.padding(3.dp))
+
+        MoviePlot(plot = movie.plot)
+    }
+}
+
+@Composable
+fun MovieDetailRow(label: String, value: String, icon: ImageVector) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SmallDescriptiveIcon(icon, Modifier.padding(end = 4.dp))
+        Text(
+            text = "$label $value",
+            style = MaterialTheme.typography.bodySmall
+        )
+    }
+}
+
+@Composable
+fun SmallDescriptiveIcon(icon: ImageVector, modifier: Modifier) {
+    Icon(
+        imageVector = icon,
+        contentDescription = "DescriptiveIcon",
+        tint = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun MoviePlot(plot: String) {
+    Row {
+        SmallDescriptiveIcon(icon = Icons.Filled.PlayArrow, Modifier.padding(end = 4.dp))
+        Text(buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp)) {
+                append("Plot: ")
+            }
+            Row {
                 withStyle(
                     style = SpanStyle(
                         color = Color.DarkGray,
@@ -193,11 +228,21 @@ fun MovieDetails(modifier: Modifier, movie: Movie) {
                         fontWeight = FontWeight.Normal
                     )
                 ) {
-                    append(movie.plot)
+                    append(plot)
                 }
-            })
-        }
+            }
+        })
     }
+}
+
+@Composable
+private fun ExpandOrCollapseArrowIcon(showDetails: Boolean, onClick: () -> Unit) {
+    val icon = if (showDetails) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+    Icon(
+        modifier = Modifier.clickable { onClick() },
+        imageVector = icon,
+        contentDescription = "Expand/Collapse"
+    )
 }
 
 @Composable
@@ -214,11 +259,10 @@ fun HorizontalScrollableImages(movieImages: List<String>) {
                         .width(maxWidth)
                         .padding(16.dp)
                 ) {
-                    MovieImage(imageUrl)
+                    MovieImage(imageUrl = imageUrl)
                 }
             }
         }
-
     }
 }
 
@@ -233,134 +277,3 @@ fun DefaultPreview() {
         )
     }
 }
-
-
-
-//@ExperimentalMaterial3Api
-//@Composable
-//fun ExpandableCard(movie: Movie, onItemClick: (String) -> Unit = {}) {
-//    var expandedState by remember {
-//        mutableStateOf(false)
-//    }
-//    val rotationState by animateFloatAsState(
-//        targetValue = if (expandedState) 180f else 0f
-//    )
-//    Log.d("Movie List:", "Mycallback function:${movie.id}")
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clickable {
-//                onItemClick(movie.id)
-//            }
-//            .padding(5.dp)
-//            .animateContentSize(
-//                animationSpec = tween(
-//                    durationMillis = 300,
-//                    easing = LinearOutSlowInEasing
-//                )
-//            ),
-//        shape = ShapeDefaults.Large,
-//        elevation = CardDefaults.cardElevation(10.dp)
-//    ) {
-//        Column {
-//            MovieImage(movie.images.first())
-//            MovieHeader(movie, rotationState, expandedState) { expandedState = !expandedState }
-//            if (expandedState) {
-//                MovieDetails(movie)
-//            }
-//        }
-//    }
-//}
-//
-//@ExperimentalMaterial3Api
-//@Composable
-//fun MovieImage(imageUrl: String) {
-//    Box(
-//        modifier = Modifier
-//            .height(150.dp)
-//            .fillMaxWidth(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        SubcomposeAsyncImage(
-//            model = ImageRequest.Builder(LocalContext.current)
-//                .data(imageUrl)
-//                .crossfade(true)
-//                .build(),
-//            loading = { CircularProgressIndicator() },
-//            contentDescription = "image",
-//            contentScale = ContentScale.Crop
-//        )
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(10.dp),
-//            contentAlignment = Alignment.TopEnd
-//        ) {
-//            Icon(
-//                imageVector = Icons.Filled.FavoriteBorder,
-//                contentDescription = "Add to favorites",
-//                tint = Color.Cyan
-//            )
-//        }
-//    }
-//}
-//
-//@ExperimentalMaterial3Api
-//@Composable
-//fun MovieHeader(movie: Movie, rotationState: Float, expandedState: Boolean, onClick: () -> Unit) {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(6.dp),
-//        horizontalArrangement = Arrangement.SpaceBetween,
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Text(
-//            text = movie.title,
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier.weight(6f),
-//            maxLines = 1,
-//            overflow = TextOverflow.Ellipsis
-//        )
-//        IconButton(onClick = onClick) {
-//            Icon(
-//                imageVector = Icons.Default.KeyboardArrowDown,
-//                contentDescription = "Arrow",
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .rotate(rotationState),
-//                onClick = { expandedState = !expandedState }
-//            )
-//        }
-//    }
-//}
-//
-//@ExperimentalMaterial3Api
-//@Composable
-//@Preview
-//fun ExpandableCardPreview() {
-//    ExpandableCard(movie = getMovies().elementAt(1))
-//}
-//
-//@Composable
-//fun MovieDetails(movie: Movie) {
-//    Column(modifier = Modifier.padding(5.dp)) {
-//        Text(text = "Director: ${movie.director}")
-//        Text(text = "Released: ${movie.year}")
-//        Text(text = "Genre: ${movie.genre}")
-//        Text(text = "Actors: ${movie.actors}")
-//        Text(text = "Rating: ${movie.rating}")
-//        Divider(color = Color.Black, thickness = 1.dp)
-//        Text(text = "Plot: ${movie.plot}")
-//    }
-//}
-//
-//@ExperimentalMaterial3Api
-//@Composable
-//fun MovieList(movies: List<Movie>) {
-//    LazyColumn {
-//        items(movies) { movie ->
-//            ExpandableCard(movie)
-//        }
-//    }
-//}

@@ -1,57 +1,56 @@
-package com.example.movieappmad24
+package com.example.movieappmad24.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.movieappmad24.navigation.BottomBarItem
+import com.example.movieappmad24.models.BottomBarItem
 
 @ExperimentalMaterial3Api
 @Composable
-fun TopBar(title: String, showBackArrow: Boolean = false, navController: NavController) {
+fun SimpleTopAppBar(title: String, showBackArrow: Boolean = false, topAppBarColors: TopAppBarColors, navController: NavController) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
         navigationIcon = {
             if (showBackArrow) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
-        )
+        colors = topAppBarColors
     )
 }
 
+@ExperimentalMaterial3Api
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun SimpleBottomAppBar(navController: NavHostController, navigationItems: List<BottomBarItem>, navigationBarItemColors: NavigationBarItemColors) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondary
     ) {
-        BottomBarItem.bottomBarItems().forEach { navItem ->
+        navigationItems.forEach { navItem ->
             val isSelected = currentDestination?.route == navItem.route
 
             NavigationBarItem(
@@ -72,9 +71,9 @@ fun BottomBar(navController: NavHostController) {
                 },
                 icon = {
                     Icon(imageVector = navItem.icon, contentDescription = "Navigation Icon")
-                }
+                },
+                colors = navigationBarItemColors
             )
         }
-
     }
 }

@@ -1,9 +1,10 @@
-package com.example.movieappmad24.navigation
+package com.example.movieappmad24.models
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material.icons.twotone.Star
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.movieappmad24.navigation.Screen
 
 data class BottomBarItem(
     val route: String,
