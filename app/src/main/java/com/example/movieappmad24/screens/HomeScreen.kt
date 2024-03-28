@@ -21,7 +21,7 @@ fun HomeScreen(navController: NavHostController) {
         topBar = {
             SimpleTopAppBar(
                 title = BottomBarItem.bottomBarItems()[0].title,
-                true,
+                false,
                 topAppBarColors = topNavigationColorScheme(),
                 navController = navController
             )
