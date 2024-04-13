@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -118,12 +117,15 @@ fun MovieCardHeader(
         modifier = Modifier
             .height(150.dp)
             .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopEnd
     ) {
 
         MovieImage(imageUrl)
 
-        FavoriteIcon(isFavorite = isFavorite, onFavoriteClick)
+        FavoriteIcon(
+            isFavorite = isFavorite,
+            onToggleFavorite = onFavoriteClick
+        )
     }
 }
 
@@ -149,7 +151,7 @@ fun FavoriteIcon(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .size(48.dp)
             .padding(10.dp)
             .clickable { onToggleFavorite() },
         contentAlignment = Alignment.TopEnd
