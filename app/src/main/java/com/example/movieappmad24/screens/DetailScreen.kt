@@ -36,7 +36,6 @@ fun DetailScreen(
                     .padding(innerPadding)
             ) {
                 MovieRow(
-                    modifier = Modifier.padding(innerPadding),
                     movie = movie,
                     onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) })
                 HorizontalScrollableImageView(movie = movie)

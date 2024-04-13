@@ -70,7 +70,7 @@ fun MovieList(
     LazyColumn(modifier = modifier) {
         items(movies) { movie ->
             MovieRow(
-                modifier = Modifier,
+                modifier = Modifier.padding(5.dp),
                 movie = movie,
                 onMovieRowClick = { movieId ->
                     navController.navigate(route = Screen.Detail.withArgs(movieId))
@@ -90,8 +90,8 @@ fun MovieRow(
 ) {
     Card(
         modifier = modifier
+            .padding(2.dp)
             .fillMaxWidth()
-            .padding(5.dp)
             .clickable {
                 onMovieRowClick(movie.id)
             },
