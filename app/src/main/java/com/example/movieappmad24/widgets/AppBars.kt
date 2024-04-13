@@ -9,9 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,9 +22,13 @@ import com.example.movieappmad24.models.BottomBarItem
 
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleTopAppBar(title: String, showBackArrow: Boolean = false, topAppBarColors: TopAppBarColors, navController: NavController) {
+fun SimpleTopAppBar(title: String, showBackArrow: Boolean = false, navController: NavController) {
     CenterAlignedTopAppBar(
         title = { Text(title) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary
+        ),
         navigationIcon = {
             if (showBackArrow) {
                 Icon(
@@ -34,21 +37,22 @@ fun SimpleTopAppBar(title: String, showBackArrow: Boolean = false, topAppBarColo
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
             }
-        },
-        colors = topAppBarColors
+        }
     )
 }
 
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleBottomAppBar(navController: NavHostController, navigationItems: List<BottomBarItem>, navigationBarItemColors: NavigationBarItemColors) {
+fun SimpleBottomAppBar(
+    navController: NavHostController,
+    navigationItems: List<BottomBarItem>
+) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondary
+        containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         navigationItems.forEach { navItem ->
             val isSelected = currentDestination?.route == navItem.route
@@ -70,9 +74,11 @@ fun SimpleBottomAppBar(navController: NavHostController, navigationItems: List<B
                     }
                 },
                 icon = {
-                    Icon(imageVector = navItem.icon, contentDescription = "Navigation Icon")
-                },
-                colors = navigationBarItemColors
+                    Icon(
+                        imageVector = navItem.icon,
+                        contentDescription = "Navigation Icon"
+                    )
+                }
             )
         }
     }

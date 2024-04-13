@@ -7,33 +7,40 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.movieappmad24.models.getMovieById
-import com.example.movieappmad24.ui.theme.CustomColorSchemes.topNavigationColorScheme
-import com.example.movieappmad24.widgets.HorizontalScrollableImages
+import com.example.movieappmad24.viewModels.MoviesViewModel
+import com.example.movieappmad24.widgets.HorizontalScrollableImageView
 import com.example.movieappmad24.widgets.MovieRow
 import com.example.movieappmad24.widgets.SimpleTopAppBar
 
 @ExperimentalMaterial3Api
 @Composable
-fun DetailScreen(navController: NavController, movieId: String?) {
-    Scaffold(
-        topBar = {
-            SimpleTopAppBar(
-                title = getMovieById(movieId.toString()).title,
-                true,
-                topAppBarColors = topNavigationColorScheme(),
-                navController = navController
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-        ) {
-            MovieRow(
-                getMovieById(movieId = movieId.toString())
-            )
-            HorizontalScrollableImages(movieImages = getMovieById(movieId.toString()).images)
+fun DetailScreen(
+    navController: NavController,
+    movieId: String?,
+    moviesViewModel: MoviesViewModel
+) {
+    movieId?.let {
+        val movie = moviesViewModel.movieList.filter { movie -> movie.id == movieId }[0]
+
+        Scaffold(
+            topBar = {
+                SimpleTopAppBar(
+                    title = movie.title,
+                    showBackArrow = true,
+                    navController = navController
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                MovieRow(
+                    modifier = Modifier.padding(innerPadding),
+                    movie = movie,
+                    onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) })
+                HorizontalScrollableImageView(movie = movie)
+            }
         }
     }
 }

@@ -6,22 +6,21 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -51,49 +50,58 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
-import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
-
+import com.example.movieappmad24.viewModels.MoviesViewModel
 
 @Composable
 fun MovieList(
     modifier: Modifier,
     movies: List<Movie> = getMovies(),
-    navController: NavController
+    navController: NavController,
+    moviesViewModel: MoviesViewModel
 ) {
     LazyColumn(modifier = modifier) {
         items(movies) { movie ->
-            MovieRow(movie = movie, onItemClick = { movieId ->
-//                Log.d("MovieList", "My callback value: $movieId")
-                navController.navigate(route = Screen.Detail.withArgs(movieId))
-            })
+            MovieRow(
+                modifier = Modifier,
+                movie = movie,
+                onMovieRowClick = { movieId ->
+                    navController.navigate(route = Screen.Detail.withArgs(movieId))
+                },
+                onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) }
+            )
         }
     }
 }
 
 @Composable
-fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
+fun MovieRow(
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    onMovieRowClick: (String) -> Unit = {},
+    onFavClick: () -> Unit = {}
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
-                onItemClick(movie.id)
+                onMovieRowClick(movie.id)
             },
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column {
-            MovieCardHeader(imageUrl = movie.images[0])
+
+            MovieCardHeader(imageUrl = movie.images[0], movie.isFavorite, onFavClick)
 
             ExpandableMovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
         }
@@ -101,15 +109,21 @@ fun MovieRow(movie: Movie, onItemClick: (String) -> Unit = {}) {
 }
 
 @Composable
-fun MovieCardHeader(imageUrl: String) {
+fun MovieCardHeader(
+    imageUrl: String,
+    isFavorite: Boolean = false,
+    onFavoriteClick: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .height(150.dp)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
+
         MovieImage(imageUrl)
-        FavoriteIcon()
+
+        FavoriteIcon(isFavorite = isFavorite, onFavoriteClick)
     }
 }
 
@@ -129,16 +143,20 @@ fun MovieImage(imageUrl: String) {
 }
 
 @Composable
-fun FavoriteIcon() {
+fun FavoriteIcon(
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onToggleFavorite() },
         contentAlignment = Alignment.TopEnd
     ) {
         Icon(
-            tint = MaterialTheme.colorScheme.secondary,
-            imageVector = Icons.Default.FavoriteBorder,
+            tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.secondary,
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
             contentDescription = "Add to favorites"
         )
     }
@@ -246,34 +264,25 @@ private fun ExpandOrCollapseArrowIcon(showDetails: Boolean, onClick: () -> Unit)
 }
 
 @Composable
-fun HorizontalScrollableImages(movieImages: List<String>) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            state = rememberLazyListState()
-        ) {
-            items(movieImages) { imageUrl ->
-                Card(
-                    modifier = Modifier
-                        .height(220.dp)
-                        .width(maxWidth)
-                        .padding(16.dp)
-                ) {
-                    MovieImage(imageUrl = imageUrl)
-                }
+fun HorizontalScrollableImageView(movie: Movie) {
+    LazyRow {
+        items(movie.images) { image ->
+            Card(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(240.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(image)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Movie poster",
+                    contentScale = ContentScale.Crop
+                )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun DefaultPreview() {
-    MovieAppMAD24Theme {
-        MovieList(
-            modifier = Modifier,
-            movies = getMovies(),
-            navController = rememberNavController()
-        )
     }
 }
