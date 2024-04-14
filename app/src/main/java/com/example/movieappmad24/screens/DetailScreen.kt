@@ -1,7 +1,8 @@
 package com.example.movieappmad24.screens
 
-import androidx.compose.foundation.layout.Column
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,8 +15,8 @@ import com.example.movieappmad24.widgets.MoviePlayer
 import com.example.movieappmad24.widgets.MovieRow
 import com.example.movieappmad24.widgets.SimpleTopAppBar
 
-@UnstableApi
-@ExperimentalMaterial3Api
+
+@OptIn(UnstableApi::class) @ExperimentalMaterial3Api
 @Composable
 fun DetailScreen(
     navController: NavController,
@@ -34,15 +35,21 @@ fun DetailScreen(
                 )
             }
         ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
+            LazyColumn(
+                modifier = Modifier.padding(innerPadding)
             ) {
-                MovieRow(
-                    movie = movie,
-                    onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) })
-                MoviePlayer(movieTrailer = movie.trailer)
-                HorizontalScrollableImageView(movie = movie)
+                item {
+                    MovieRow(
+                        movie = movie,
+                        onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) }
+                    )
+                }
+                item {
+                    MoviePlayer(movieTrailer = movie.trailer)
+                }
+                item {
+                    HorizontalScrollableImageView(movie = movie)
+                }
             }
         }
     }
