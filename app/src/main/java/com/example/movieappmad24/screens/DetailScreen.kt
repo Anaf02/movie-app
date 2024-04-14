@@ -6,12 +6,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.example.movieappmad24.viewModels.MoviesViewModel
 import com.example.movieappmad24.widgets.HorizontalScrollableImageView
+import com.example.movieappmad24.widgets.MoviePlayer
 import com.example.movieappmad24.widgets.MovieRow
 import com.example.movieappmad24.widgets.SimpleTopAppBar
 
+@UnstableApi
 @ExperimentalMaterial3Api
 @Composable
 fun DetailScreen(
@@ -38,6 +41,7 @@ fun DetailScreen(
                 MovieRow(
                     movie = movie,
                     onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) })
+                MoviePlayer(movieTrailer = movie.trailer)
                 HorizontalScrollableImageView(movie = movie)
             }
         }
