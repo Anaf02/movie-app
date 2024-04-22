@@ -6,8 +6,9 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
+import com.example.movieappmad24.repositories.MovieRepository
 
-class MoviesViewModel : ViewModel() {
+class MoviesViewModel(private val repository: MovieRepository) : ViewModel() {
     private val _movieList = getMovies().toMutableStateList()
 
     private val _favoriteMoviesList = mutableStateListOf<Movie>()
