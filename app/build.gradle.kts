@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -44,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
     packaging {
         resources {
@@ -75,6 +76,8 @@ dependencies {
     val nav_version = "2.7.7"
     val compose_version = "1.6.4"
     val lifecycle_version = "2.7.0"
+    val room_version = "2.6.1"
+
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.material:material:$compose_version")
 // ViewModel utilities for Compose
@@ -83,4 +86,10 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-exoplayer-dash:1.3.1")
     implementation("androidx.media3:media3-ui:1.3.1")
+    // room dependencies
+    implementation("androidx.room:room-runtime:$room_version")
+// To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:$room_version")
+// optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$room_version")
 }
