@@ -4,13 +4,13 @@ import com.example.movieappmad24.data.MovieDao;
 import com.example.movieappmad24.models.Movie;
 
 class MovieRepository(private val movieDao: MovieDao) {
-    suspend fun add(movie: Movie) = movieDao.add(movie)
+    suspend fun add(movie: Movie) = movieDao.addMovie(movie)
 
-    suspend fun delete(movie: Movie) = movieDao.delete(movie)
+    suspend fun delete(movie: Movie) = movieDao.deleteMovie(movie)
 
-    suspend fun update(movie: Movie) = movieDao.update(movie)
+    suspend fun update(movie: Movie) = movieDao.updateMovie(movie)
 
-    fun getAllMovies() = movieDao.getAll()
+    fun getAllMovies() = movieDao.getAllMovies()
 
     fun getAllFavoriteMovies() = movieDao.getAllFavorite()
 

@@ -1,26 +1,41 @@
 package com.example.movieappmad24.models
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "movies")
 data class Movie(
     @PrimaryKey(autoGenerate = true)
     var dbId: Long = 0,
-    val id: String,
-    @ColumnInfo
-    val title: String,
-    val year: String,
-    val genre: String,
-    val director: String,
-    val actors: String,
-    val plot: String,
-    val images: List<String>,
-    val trailer: String,
-    val rating: String,
+    var id: String,
+    var title: String,
+    var year: String,
+    var genre: String,
+    var director: String,
+    var actors: String,
+    var plot: String,
+    @Ignore
+    var images: List<String>,
+    var trailer: String,
+    var rating: String,
     var isFavorite: Boolean = false
-)
+) {
+    // Empty constructor
+    constructor() : this(
+        dbId = 0,
+        id = "",
+        title = "",
+        year = "",
+        genre = "",
+        director = "",
+        actors = "",
+        plot = "",
+        images = emptyList(),
+        trailer = "",
+        rating = ""
+    )
+}
 
 fun getMovies(): List<Movie> {
     return listOf(
