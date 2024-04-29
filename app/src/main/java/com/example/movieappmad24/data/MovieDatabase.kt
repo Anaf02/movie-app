@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.MovieImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(
     entities = [Movie::class, MovieImage::class],  // tables in the db
@@ -26,6 +30,17 @@ abstract class MovieDatabase : RoomDatabase() {
                 ?: synchronized(this) { // wrap in synchronized block to prevent race conditions
                     Room.databaseBuilder(context, MovieDatabase::class.java, "movie_db")
                         .fallbackToDestructiveMigration() // if schema changes wipe the whole db - there are better migration strategies for production usage
+                        .addCallback(object : RoomDatabase.Callback() {
+                            override fun onCreate(db: SupportSQLiteDatabase) {
+                                super.onCreate(db)
+                                // Seed the database with initial data
+                                instance?.let { database ->
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        seedDatabase(database)
+                                    }
+                                }
+                            }
+                        })
                         .build() // create an instance of the db
                         .also {
                             instance = it   // override the instance with newly created db
@@ -33,4 +48,8 @@ abstract class MovieDatabase : RoomDatabase() {
                 }
         }
     }
+}
+
+private suspend fun seedDatabase(database: MovieDatabase) {
+
 }

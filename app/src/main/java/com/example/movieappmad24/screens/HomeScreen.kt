@@ -11,10 +11,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.movieappmad24.data.MovieDatabase
-import com.example.movieappmad24.widgets.BottomBarItem
 import com.example.movieappmad24.repositories.MovieRepository
 import com.example.movieappmad24.viewModels.HomeMoviesViewModel
 import com.example.movieappmad24.viewModels.MoviesViewModelFactory
+import com.example.movieappmad24.widgets.BottomBarItem
 import com.example.movieappmad24.widgets.MovieList
 import com.example.movieappmad24.widgets.SimpleBottomAppBar
 import com.example.movieappmad24.widgets.SimpleTopAppBar
