@@ -2,7 +2,7 @@ package com.example.movieappmad24.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieappmad24.models.Movie
+import com.example.movieappmad24.models.MovieWithImages
 import com.example.movieappmad24.repositories.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class WatchlistMoviesViewModel(private val repository: MovieRepository) : ViewModel() {
 
-    private val _favoriteMovies = MutableStateFlow(listOf<Movie>())
+    private val _favoriteMovies = MutableStateFlow(listOf<MovieWithImages>())
 
     init {
         viewModelScope.launch {
@@ -25,14 +25,14 @@ class WatchlistMoviesViewModel(private val repository: MovieRepository) : ViewMo
     }
 
     fun toggleIsFavorite(movieId: String) {
-        val movie = repository.getMovieById(movieId)
+        val movieWithImages = repository.getMovieById(movieId)
 
-        movie.isFavorite = !movie.isFavorite
+        movieWithImages.movie.isFavorite = !movieWithImages.movie.isFavorite
 
         viewModelScope.launch {
-            repository.updateMovie(movie)
+            repository.updateMovie(movieWithImages.movie)
         }
     }
 
-    val favoriteMovies: StateFlow<List<Movie>> = _favoriteMovies.asStateFlow()
+    val favoriteMovies: StateFlow<List<MovieWithImages>> = _favoriteMovies.asStateFlow()
 }

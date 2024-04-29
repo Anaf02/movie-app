@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.movieappmad24.data.MovieDatabase
-import com.example.movieappmad24.models.BottomBarItem
+import com.example.movieappmad24.widgets.BottomBarItem
 import com.example.movieappmad24.repositories.MovieRepository
 import com.example.movieappmad24.viewModels.HomeMoviesViewModel
 import com.example.movieappmad24.viewModels.MoviesViewModelFactory
@@ -48,7 +48,7 @@ fun HomeScreen(
     ) { innerPadding ->
         MovieList(
             modifier = Modifier.padding(innerPadding),
-            movies = movies,
+            moviesWithImages = movies,
             navController = navController,
             toggleFavorite = viewModel::toggleIsFavorite
         )

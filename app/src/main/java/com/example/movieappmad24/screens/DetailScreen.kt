@@ -35,11 +35,10 @@ fun DetailScreen(
 
     movieId?.let {
         val movie = viewModel.getMovieById(movieId)
-
         Scaffold(
             topBar = {
                 SimpleTopAppBar(
-                    title = movie.title,
+                    title = movie.movie.title,
                     showBackArrow = true,
                     navController = navController
                 )
@@ -50,15 +49,15 @@ fun DetailScreen(
             ) {
                 item {
                     MovieRow(
-                        movie = movie,
-                        onFavClick = { viewModel.toggleIsFavorite(movie.id) }
+                        movieWithImages = movie,
+                        onFavClick = { viewModel.toggleIsFavorite(movie.movie.id) }
                     )
                 }
                 item {
-                    MoviePlayer(movieTrailer = movie.trailer)
+                    MoviePlayer(movieTrailer = movie.movie.trailer)
                 }
                 item {
-                    HorizontalScrollableImageView(movie = movie)
+                    HorizontalScrollableImageView(movieWithImages = movie)
                 }
             }
         }

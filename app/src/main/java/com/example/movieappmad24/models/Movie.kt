@@ -2,9 +2,13 @@ package com.example.movieappmad24.models
 
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "movies")
+@Entity(
+    tableName = "movies",
+    indices = [Index(value = ["id"], unique = true)]
+)
 data class Movie(
     @PrimaryKey(autoGenerate = true)
     var dbId: Long = 0,

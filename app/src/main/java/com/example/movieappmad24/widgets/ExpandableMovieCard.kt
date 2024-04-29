@@ -55,26 +55,25 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.example.movieappmad24.models.Movie
-import com.example.movieappmad24.models.getMovies
+import com.example.movieappmad24.models.MovieWithImages
 import com.example.movieappmad24.navigation.Screen
 
 @Composable
 fun MovieList(
     modifier: Modifier,
-    movies: List<Movie> = getMovies(),
+    moviesWithImages: List<MovieWithImages>,
     navController: NavController,
     toggleFavorite: (String) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
-        items(movies) { movie ->
+        items(moviesWithImages) { movieWithImages ->
             MovieRow(
                 modifier = Modifier.padding(5.dp),
-                movie = movie,
+                movieWithImages = movieWithImages,
                 onMovieRowClick = { movieId ->
                     navController.navigate(route = Screen.Detail.withArgs(movieId))
                 },
-                onFavClick = { toggleFavorite(movie.id) }
+                onFavClick = { toggleFavorite(movieWithImages.movie.id) }
             )
         }
     }
@@ -83,7 +82,7 @@ fun MovieList(
 @Composable
 fun MovieRow(
     modifier: Modifier = Modifier,
-    movie: Movie,
+    movieWithImages: MovieWithImages,
     onMovieRowClick: (String) -> Unit = {},
     onFavClick: () -> Unit = {}
 ) {
@@ -92,16 +91,23 @@ fun MovieRow(
             .padding(2.dp)
             .fillMaxWidth()
             .clickable {
-                onMovieRowClick(movie.id)
+                onMovieRowClick(movieWithImages.movie.id)
             },
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column {
 
-            MovieCardHeader(imageUrl = movie.images[0], movie.isFavorite, onFavClick)
+            MovieCardHeader(
+                imageUrl = movieWithImages.images[0].url,
+                movieWithImages.movie.isFavorite,
+                onFavClick
+            )
 
-            ExpandableMovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
+            ExpandableMovieDetails(
+                modifier = Modifier.padding(12.dp),
+                movieWithImages = movieWithImages
+            )
         }
     }
 }
@@ -165,7 +171,7 @@ fun FavoriteIcon(
 
 
 @Composable
-fun ExpandableMovieDetails(modifier: Modifier, movie: Movie) {
+fun ExpandableMovieDetails(modifier: Modifier, movieWithImages: MovieWithImages) {
     var showDetails by remember {
         mutableStateOf(false)
     }
@@ -177,7 +183,7 @@ fun ExpandableMovieDetails(modifier: Modifier, movie: Movie) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = movie.title)
+        Text(text = movieWithImages.movie.title)
         ExpandOrCollapseArrowIcon(
             showDetails = showDetails,
             onClick = { showDetails = !showDetails })
@@ -188,23 +194,23 @@ fun ExpandableMovieDetails(modifier: Modifier, movie: Movie) {
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        MovieDetails(modifier = modifier, movie = movie)
+        MovieDetails(modifier = modifier, movieWithImages = movieWithImages)
     }
 }
 
 @Composable
-fun MovieDetails(modifier: Modifier, movie: Movie) {
+fun MovieDetails(modifier: Modifier, movieWithImages: MovieWithImages) {
     Column(modifier = modifier) {
 
-        MovieDetailRow("Director:", movie.director, Icons.Filled.Person)
-        MovieDetailRow("Released:", movie.year, Icons.Filled.Check)
-        MovieDetailRow("Genre:", movie.genre, Icons.Filled.DateRange)
-        MovieDetailRow("Actors:", movie.actors, Icons.Filled.Face)
-        MovieDetailRow("Rating:", movie.rating, Icons.Filled.Star)
+        MovieDetailRow("Director:", movieWithImages.movie.director, Icons.Filled.Person)
+        MovieDetailRow("Released:", movieWithImages.movie.year, Icons.Filled.Check)
+        MovieDetailRow("Genre:", movieWithImages.movie.genre, Icons.Filled.DateRange)
+        MovieDetailRow("Actors:", movieWithImages.movie.actors, Icons.Filled.Face)
+        MovieDetailRow("Rating:", movieWithImages.movie.rating, Icons.Filled.Star)
 
         Divider(modifier = Modifier.padding(3.dp))
 
-        MoviePlot(plot = movie.plot)
+        MoviePlot(plot = movieWithImages.movie.plot)
     }
 }
 
@@ -265,9 +271,9 @@ private fun ExpandOrCollapseArrowIcon(showDetails: Boolean, onClick: () -> Unit)
 }
 
 @Composable
-fun HorizontalScrollableImageView(movie: Movie) {
+fun HorizontalScrollableImageView(movieWithImages: MovieWithImages) {
     LazyRow {
-        items(movie.images) { image ->
+        items(movieWithImages.images) { image ->
             Card(
                 modifier = Modifier
                     .padding(12.dp)

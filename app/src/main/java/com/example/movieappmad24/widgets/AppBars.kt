@@ -18,7 +18,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.movieappmad24.models.BottomBarItem
 
 @ExperimentalMaterial3Api
 @Composable
