@@ -58,14 +58,13 @@ import coil.request.ImageRequest
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
-import com.example.movieappmad24.viewModels.MoviesViewModel
 
 @Composable
 fun MovieList(
     modifier: Modifier,
     movies: List<Movie> = getMovies(),
     navController: NavController,
-    moviesViewModel: MoviesViewModel
+    toggleFavorite: (String) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
         items(movies) { movie ->
@@ -75,7 +74,7 @@ fun MovieList(
                 onMovieRowClick = { movieId ->
                     navController.navigate(route = Screen.Detail.withArgs(movieId))
                 },
-                onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) }
+                onFavClick = { toggleFavorite(movie.id) }
             )
         }
     }

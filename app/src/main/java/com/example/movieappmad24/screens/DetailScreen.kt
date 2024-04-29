@@ -7,24 +7,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import com.example.movieappmad24.viewModels.MoviesViewModel
+import com.example.movieappmad24.data.MovieDatabase
+import com.example.movieappmad24.repositories.MovieRepository
+import com.example.movieappmad24.viewModels.DetailMoviesViewModel
+import com.example.movieappmad24.viewModels.MoviesViewModelFactory
 import com.example.movieappmad24.widgets.HorizontalScrollableImageView
 import com.example.movieappmad24.widgets.MoviePlayer
 import com.example.movieappmad24.widgets.MovieRow
 import com.example.movieappmad24.widgets.SimpleTopAppBar
 
 
-@OptIn(UnstableApi::class) @ExperimentalMaterial3Api
+@OptIn(UnstableApi::class)
+@ExperimentalMaterial3Api
 @Composable
 fun DetailScreen(
     navController: NavController,
-    movieId: String?,
-    moviesViewModel: MoviesViewModel
+    movieId: String?
 ) {
+    val db = MovieDatabase.getDatabase(LocalContext.current)
+    val repository = MovieRepository(movieDao = db.movieDao())
+    val factory = MoviesViewModelFactory(repository = repository)
+    val viewModel: DetailMoviesViewModel = viewModel(factory = factory)
+
     movieId?.let {
-        val movie = moviesViewModel.movieList.filter { movie -> movie.id == movieId }[0]
+        val movie = viewModel.getMovieById(movieId)
 
         Scaffold(
             topBar = {
@@ -41,7 +51,7 @@ fun DetailScreen(
                 item {
                     MovieRow(
                         movie = movie,
-                        onFavClick = { moviesViewModel.toggleIsFavorite(movie.id) }
+                        onFavClick = { viewModel.toggleIsFavorite(movie.id) }
                     )
                 }
                 item {

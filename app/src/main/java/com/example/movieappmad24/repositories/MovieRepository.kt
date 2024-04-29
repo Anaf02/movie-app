@@ -1,18 +1,23 @@
 package com.example.movieappmad24.repositories
 
-import com.example.movieappmad24.data.MovieDao;
-import com.example.movieappmad24.models.Movie;
+import com.example.movieappmad24.data.MovieDao
+import com.example.movieappmad24.models.Movie
+import kotlinx.coroutines.flow.Flow
 
 class MovieRepository(private val movieDao: MovieDao) {
-    suspend fun add(movie: Movie) = movieDao.addMovie(movie)
+    suspend fun addMovie(movie: Movie) = movieDao.addMovie(movie)
 
-    suspend fun delete(movie: Movie) = movieDao.deleteMovie(movie)
+    suspend fun deleteMovie(movie: Movie) = movieDao.deleteMovie(movie)
 
-    suspend fun update(movie: Movie) = movieDao.updateMovie(movie)
+    suspend fun updateMovie(movie: Movie) = movieDao.updateMovie(movie)
 
     fun getAllMovies() = movieDao.getAllMovies()
 
     fun getAllFavoriteMovies() = movieDao.getAllFavorite()
+
+    fun getMovieById(id: String): Movie = movieDao.getMovieById(id)
+
+    fun getById(id: Long): Flow<Movie?> = movieDao.get(id)
 
     companion object {
         // For Singleton instantiation
